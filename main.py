@@ -21,6 +21,8 @@ import re
 import subprocess
 from subprocess import Popen, PIPE
 
+from dev.handling import Handling
+
 __author__ = "Eduardo Xavier Castro Morales"
 __license__ = "GPL"
 __version__ = "1.0.1"
@@ -47,7 +49,6 @@ def main():
 	        is_online = False
 
 	if is_online == True:
-	    print(" Tenemos Internet :) ")
 	    # tomamos del update_data el rack_loc o hostname  (con la finalidad de enviarselo a un servicio que nos avise)
 	    update_data = subprocess.check_output(['/opt/ethos/bin/update'])
 	    for data in update_data.splitlines():
@@ -80,4 +81,8 @@ def main():
 		exit()
 
 if __name__ == '__main__':
-	main()
+	#main()
+	handling = Handling()
+	counter = handling.readTheCounterFile()
+	handling.addToTheCounterFile(counter)
+	handling.resetCounterFile()
