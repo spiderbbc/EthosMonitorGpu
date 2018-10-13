@@ -22,6 +22,7 @@ import subprocess
 from subprocess import Popen, PIPE
 
 from dev.handling import Handling
+from dev.email import sendEmailAlert
 
 __author__ = "Eduardo Xavier Castro Morales"
 __license__ = "GPL"
@@ -75,14 +76,23 @@ def main():
 	    	for gpu_hash in (gpu_hashes):
 	    			if float(gpu_hash) < float(minimun_hash):
 	    				print("Reiniciando el sistema")
-	    				os.system("/opt/ethos/bin/r")	
+	    				handling = Handling()
+	    				counter = handling.readTheCounterFile()
+	    				
+	    				if int(counter) == 4:
+	    					sendEmailAlert(str(rack_loc))
+	    				else:
+	    					handling.addToTheCounterFile(counter)
+	    					os.system("/opt/ethos/bin/r")	
+	    						
 	else:
 		print(" No Tenemos Internet :( ")
 		exit()
 
 if __name__ == '__main__':
-	#main()
-	handling = Handling()
-	counter = handling.readTheCounterFile()
-	handling.addToTheCounterFile(counter)
-	handling.resetCounterFile()
+	main()
+	#handling = Handling()
+	#counter = handling.readTheCounterFile()
+	#handling.addToTheCounterFile(counter)
+	#handling.resetCounterFile()
+	#sendEmailAlert('sm120')
