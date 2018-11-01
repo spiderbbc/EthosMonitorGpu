@@ -73,18 +73,22 @@ def main():
 	    	print(err.decode())
 	    else:
 	    	gpu_hashes = res.split(" ")
+	    	is_need_reboot = False
 	    	for gpu_hash in (gpu_hashes):
 	    			if float(gpu_hash) < float(minimun_hash):
-	    				print("Reiniciando el sistema")
-	    				handling = Handling()
-	    				counter = handling.readTheCounterFile()
-	    				
-	    				if int(counter) == 4:
-	    					sendEmailAlert(str(rack_loc))
-	    				else:
-	    					handling.addToTheCounterFile(counter)
-	    					os.system("/opt/ethos/bin/r")	
-	    						
+	    				is_need_reboot = True
+
+	    	if is_need_reboot:
+	    		handling = Handling()
+	    		counter = handling.readTheCounterFile()
+	    		if int(counter) < 4:
+	    			handling.addToTheCounterFile(counter)
+	    			os.system("/opt/ethos/bin/r")
+	    		elif int(counter) == 5:
+	    			handling.addToTheCounterFile(counter)
+	    			sendEmailAlert(str(rack_loc))
+	    		else:
+	    			pass				
 	else:
 		print(" No Tenemos Internet :( ")
 		exit()
